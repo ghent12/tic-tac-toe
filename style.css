@@ -21,6 +21,12 @@ header {
   width: 30rem;
 }
 
+.change-symbols {
+  padding: 0.2rem;
+  border-radius: 1rem;
+  border: 0.1rem solid #338;
+}
+
 .player-select {
   grid-row: 2 / -1;
   width: 5rem;
@@ -29,27 +35,31 @@ header {
   height: 3rem;
 }
 
+.selected-player-button {
+  border: 0.2rem solid #004;
+}
+
 .play-area {
   height: 30rem;
   width: 30rem;
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   background-color: #002;
-  box-shadow: 00px 00px 1rem #123;
+  box-shadow: 00px 00px 1rem #124;
 }
 
-.play-button-1, .play-button-2, .play-button-3 {
+.play-button-holder-1, .play-button-holder-2, .play-button-holder-3 {
   margin-bottom: 0.3rem;
 }
 
-.play-button-1, .play-button-4, .play-button-7 {
+.play-button-holder-1, .play-button-holder-4, .play-button-holder-7 {
   margin-right: 0.3rem;
 }
 
-.play-button-3, .play-button-6, .play-button-9 {
+.play-button-holder-3, .play-button-holder-6, .play-button-holder-9 {
   margin-left: 0.3rem;
 }
 
-.play-button-7, .play-button-8, .play-button-9 {
+.play-button-holder-7, .play-button-holder-8, .play-button-holder-9 {
   margin-top: 0.3rem;
 }

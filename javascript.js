@@ -9,7 +9,9 @@ const gameBoard = (() => {
     const playArea = htmlBody.appendChild(document.createElement('main'));
           playArea.classList.add('play-area');
   for (let i = 1; i <= _boardArray.length; i++) {
-      const boardButton = playArea.appendChild(document.createElement('button'));
+      const boardButtonHolder = playArea.appendChild(document.createElement('button'));
+            boardButtonHolder.classList.add('play-button-holder-' + i);
+      const boardButton = boardButtonHolder.appendChild(document.createElement('button'));
             boardButton.classList.add('play-button', 'play-button-' + i);
             //boardButton.textContent = i;
             boardButton.id = 'play-button-' + i;
@@ -30,9 +32,23 @@ const Player = (symbol) => {
   };
 }
 
+const gameFlow = (() => {
 
+})();
 
 const displayController = (() => {
+
+  const _initialPlayerSelect = (() => {
+    const firstTime = document.querySelectorAll('h1');
+    const xButton = document.getElementById('select-x')
+    if (firstTime.length == 1) {
+      xButton.classList.add('selected-player-button');
+    }
+  })();
+
+  const _initializeButtonClicks = (() => {
+    //const 
+  })();
 
   return {
 
