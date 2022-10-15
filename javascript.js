@@ -9,7 +9,7 @@ const gameBoard = (() => {
     const playArea = htmlBody.appendChild(document.createElement('main'));
           playArea.classList.add('play-area');
   for (let i = 1; i <= _boardArray.length; i++) {
-      const boardButtonHolder = playArea.appendChild(document.createElement('button'));
+      const boardButtonHolder = playArea.appendChild(document.createElement('div'));
             boardButtonHolder.classList.add('play-button-holder-' + i);
       const boardButton = boardButtonHolder.appendChild(document.createElement('button'));
             boardButton.classList.add('play-button', 'play-button-' + i);

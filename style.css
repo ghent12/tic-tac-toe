@@ -63,3 +63,8 @@ header {
 .play-button-holder-7, .play-button-holder-8, .play-button-holder-9 {
   margin-top: 0.3rem;
 }
+
+.play-button {
+  height: 100%;
+  width: 100%;
+}
