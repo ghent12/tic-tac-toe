@@ -11,7 +11,8 @@ const gameBoard = (() => {
   for (let i = 1; i <= _boardArray.length; i++) {
       const boardButton = playArea.appendChild(document.createElement('button'));
             boardButton.classList.add('play-button', 'play-button-' + i);
-            boardButton.textContent = i;
+            //boardButton.textContent = i;
+            boardButton.id = 'play-button-' + i;
     }
   })();
 
