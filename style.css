@@ -21,6 +21,10 @@ header {
   width: 30rem;
 }
 
+#difficulty {
+  border-radius: 0.7rem;
+}
+
 .change-symbols {
   padding: 0.2rem;
   border-radius: 1rem;
@@ -48,19 +52,19 @@ header {
   box-shadow: 00px 00px 1rem #124;
 }
 
-.play-button-holder-1, .play-button-holder-2, .play-button-holder-3 {
+.button-holder-1, .button-holder-2, .button-holder-3 {
   margin-bottom: 0.3rem;
 }
 
-.play-button-holder-1, .play-button-holder-4, .play-button-holder-7 {
+.button-holder-1, .button-holder-4, .button-holder-7 {
   margin-right: 0.3rem;
 }
 
-.play-button-holder-3, .play-button-holder-6, .play-button-holder-9 {
+.button-holder-3, .button-holder-6, .button-holder-9 {
   margin-left: 0.3rem;
 }
 
-.play-button-holder-7, .play-button-holder-8, .play-button-holder-9 {
+.button-holder-7, .button-holder-8, .button-holder-9 {
   margin-top: 0.3rem;
 }
 
