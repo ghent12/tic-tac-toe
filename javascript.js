@@ -4,11 +4,15 @@ const gameBoard = (() => {
   const gameBoardSize = () => 9;
 
   let _boardArray = new Array(gameBoardSize());
-  const claimSquare = (position, player) => {
-    _boardArray[position - 1] = player.getSymbol();
-    console.log(_boardArray)
+
+  const claimSquare = (position, whichPlayer) => {
+    //_boardArray[position - 1] = Player().getSymbol();
+    _boardArray[position - 1] = whichPlayer.getPseudo(whichPlayer);
+//    console.log(_boardArray)
     let button = document.querySelector(`.play-button-${position}`);
-    button.textContent = player.getSymbol();
+//    console.log(`Here is player.getSymbol(): ${player.getSymbol()}`);
+    console.log(whichPlayer.getPseudo(whichPlayer));
+    button.textContent = whichPlayer.getPseudo(whichPlayer);
     gameFlow.checkGameStatus();
   }
 
@@ -18,7 +22,7 @@ const gameBoard = (() => {
     const htmlBody = document.getElementById('body')
     const playArea = htmlBody.appendChild(document.createElement('main'));
           playArea.classList.add('play-area');
-  for (let i = 1; i <= _boardArray.length; i++) {
+    for (let i = 1; i <= _boardArray.length; i++) {
       const boardButtonHolder = playArea.appendChild(document.createElement('div'));
             boardButtonHolder.classList.add('button-holder-' + i);
       const boardButton = boardButtonHolder.appendChild(document.createElement('button'));
@@ -62,6 +66,10 @@ const Player = (symbol) => {
   let _symbol = symbol;
   const getSymbol = () => _symbol;
   
+  //const getSymbol = () => {document.getElementById(`select-${_symbol.toLowerCase()}`).textContent}
+
+  //const getSymbol = (symbol) => getPseudo(symbol);
+
   const chooseSymbol = (choice, symbol) => {
     _symbol = symbol;
     if (choice === true) {
@@ -71,17 +79,35 @@ const Player = (symbol) => {
     }
   }
 
-  const pseudoX = () => {
-
+  const setPseudoX = () => {
+    let newX = document.getElementsByName('x-symbol-field')[0].value
+    if (newX != undefined) {
+      document.getElementById('select-x').textContent = newX;
+    }
   }
 
-  const pseudoO = () => {}
+  const setPseudoO = () => {
+    let newO = document.getElementsByName('o-symbol-field')[0].value
+    if (newO != undefined) {
+      document.getElementById('select-o').textContent = newO;
+    }
+  }
+
+  const getPseudo = () => {
+    return document.getElementById(`select-${symbol.toLowerCase()}`).textContent;
+  }
+
+//  const getPseudoO = () => {
+//    return document.getElementById('select-o').textContent;
+//  }
 
   return {
     getSymbol,
     chooseSymbol,
-    pseudoX,
-    pseudoO,
+    setPseudoX,
+    setPseudoO,
+    getPseudo//X,
+    //getPseudoO
   };
 }
 
@@ -90,11 +116,22 @@ const gameFlow = (() => {
   let _computer = Player('O');
 
   const changeSymbol = () => {
-
+    //Just shows the form
+    const changeForm = document.getElementById('change-symbols-form-area');
+    changeForm.classList.remove('hide-form');
+    document.getElementsByName('x-symbol-field')[0].value = document.getElementById('select-x').textContent;
+    document.getElementsByName('o-symbol-field')[0].value = document.getElementById('select-o').textContent;
   }
 
   const changeSymbolSubmit = () => {
-
+    //Closes the form, calls for game reset, and updates 
+    //symbols if one or more was input
+    const changeForm = document.getElementById('change-symbols-form-area');
+    changeForm.classList.add('hide-form');
+    //Call for game reset
+    //Update symbols for pseudoX and pseudoO.
+    Player().setPseudoX();
+    Player().setPseudoO();
   }
   //const test = console.log(`Clicked ${boardButton.id}`)
   const attemptClaim = (playButton) => {
@@ -163,14 +200,28 @@ const gameFlow = (() => {
 
 const displayController = (() => {
   const _initialPlayerSelect = (() => {
-    const changeSymbolsForm = document.getElementsByClassName('header')[0].appendChild(document.createElement('form'));
-    const changeButtonSubmit = changeSymbolsForm.appendChild(document.createElement('button'));
+    const changeSymbolsFormArea = document.getElementById('body').appendChild(document.createElement('div'));
+          changeSymbolsFormArea.id = 'change-symbols-form-area';
+          changeSymbolsFormArea.classList.add('hide-form');
+    const changeSymbolsForm = changeSymbolsFormArea.appendChild(document.createElement('form'));
+          changeSymbolsForm.id = 'change-symbols-form';
+    const changeSymbolXLabel = changeSymbolsForm.appendChild(document.createElement('label'));
+          changeSymbolXLabel.id = 'x-symbol-label';
+          changeSymbolXLabel.setAttribute('for', 'x-symbol-field');
+          changeSymbolXLabel.textContent = "First Player:";
+    const changeSymbolX = changeSymbolXLabel.appendChild(document.createElement('input'));
+          changeSymbolX.name = 'x-symbol-field';
+          changeSymbolX.classList.add('symbol-input', 'x-symbol-input');
+    const changeSymbolOLabel = changeSymbolsForm.appendChild(document.createElement('label'));
+          changeSymbolOLabel.id = 'o-symbol-label';
+          changeSymbolOLabel.setAttribute('for', 'o-symbol-field');
+          changeSymbolOLabel.textContent = "Second Player:";
+    const changeSymbolO = changeSymbolOLabel.appendChild(document.createElement('input'));
+          changeSymbolO.name = 'o-symbol-field';
+          changeSymbolO.classList.add('symbol-input', 'o-symbol-input');
+    const changeButtonSubmit = changeSymbolsFormArea.appendChild(document.createElement('button'));
           changeButtonSubmit.classList.add('change-symbols-submit');
           changeButtonSubmit.textContent = 'Submit';
-    const changeSymbolX = changeSymbolsForm.appendChild(document.createElement('input'));
-          changeSymbolX.name = 'x-symbol-field';
-    const changeSymbolO = changeSymbolsForm.appendChild(document.createElement('input'));
-          changeSymbolO.name = 'o-symbol-field';
     const firstTime = document.querySelectorAll('h1');
     const xButton = document.getElementById('select-x');
     const oButton = document.getElementById('select-o');
@@ -178,8 +229,8 @@ const displayController = (() => {
 
     xButton.addEventListener('click', gameFlow.chooseX.bind());
     oButton.addEventListener('click', gameFlow.chooseO.bind());
-    changeButton.addEventListener('click', gameFlow.changeSymbol());
-    changeButtonSubmit.addEventListener('click', gameFlow.changeSymbolSubmit());
+    changeButton.addEventListener('click', gameFlow.changeSymbol.bind());
+    changeButtonSubmit.addEventListener('click', gameFlow.changeSymbolSubmit.bind());
     if (firstTime.length == 1) {
       Player().chooseSymbol(false, 'O');
       Player().chooseSymbol(true, 'X');
