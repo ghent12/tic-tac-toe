@@ -212,6 +212,7 @@ const displayController = (() => {
     const changeSymbolX = changeSymbolXLabel.appendChild(document.createElement('input'));
           changeSymbolX.name = 'x-symbol-field';
           changeSymbolX.classList.add('symbol-input', 'x-symbol-input');
+          changeSymbolX.maxLength = 8;
     const changeSymbolOLabel = changeSymbolsForm.appendChild(document.createElement('label'));
           changeSymbolOLabel.id = 'o-symbol-label';
           changeSymbolOLabel.setAttribute('for', 'o-symbol-field');
@@ -219,6 +220,7 @@ const displayController = (() => {
     const changeSymbolO = changeSymbolOLabel.appendChild(document.createElement('input'));
           changeSymbolO.name = 'o-symbol-field';
           changeSymbolO.classList.add('symbol-input', 'o-symbol-input');
+          changeSymbolO.maxLength = 8;
     const changeButtonSubmit = changeSymbolsFormArea.appendChild(document.createElement('button'));
           changeButtonSubmit.classList.add('change-symbols-submit');
           changeButtonSubmit.textContent = 'Submit';
