@@ -8,10 +8,8 @@ const gameBoard = (() => {
   const claimSquare = (position, whichPlayer) => {
     //_boardArray[position - 1] = Player().getSymbol();
     _boardArray[position - 1] = whichPlayer.getPseudo(whichPlayer);
-//    console.log(_boardArray)
     let button = document.querySelector(`.play-button-${position}`);
-//    console.log(`Here is player.getSymbol(): ${player.getSymbol()}`);
-    console.log(whichPlayer.getPseudo(whichPlayer));
+//    console.log(whichPlayer.getPseudo(whichPlayer));
     button.textContent = whichPlayer.getPseudo(whichPlayer);
     gameFlow.checkGameStatus();
   }
@@ -31,15 +29,15 @@ const gameBoard = (() => {
     }
   })();
 
-  const gameStatus = (playerStatus, computerStatus) => {
+  const gameStatus = () => {
     if (gameBoardSize() == 9) {
       console.groupCollapsed('Game Status');
       let _playerArray = [];
       let _computerArray = [];
       for (let i = 0; i < _boardArray.length; i++) {
         if (_boardArray[i] !== undefined) {
-          console.log(i + Player(_boardArray[i]).getSymbol());
-          if (_boardArray[i] === playerStatus) {
+          console.log(i + ' ' + Player(_boardArray[i]).getSymbol());
+          if (_boardArray[i] === Player().getPseudo('X')) {
             _playerArray.push(i + 1);
           } else if (_boardArray[i] === computerStatus) {
             _computerArray.push(i + 1);
@@ -48,7 +46,7 @@ const gameBoard = (() => {
 
         }
       }
-      console.log(playerStatus);
+      console.log(_playerArray + _computerArray);
       console.groupEnd('Game Status');
     }
     return '';
@@ -93,8 +91,10 @@ const Player = (symbol) => {
     }
   }
 
-  const getPseudo = () => {
-    return document.getElementById(`select-${symbol.toLowerCase()}`).textContent;
+  const getPseudoPlayer = () => {
+//    console.log(eitherPlayer);
+//    console.log(document.getElementById(`select-${eitherPlayer.toString().toLowerCase()}`));
+    return document.getElementsByClassName(`player-choice`).textContent;
   }
 
 //  const getPseudoO = () => {
@@ -133,21 +133,16 @@ const gameFlow = (() => {
     Player().setPseudoX();
     Player().setPseudoO();
   }
-  //const test = console.log(`Clicked ${boardButton.id}`)
   const attemptClaim = (playButton) => {
-//    console.log('playButton used for attemptClaim is ' + playButton)
     const position = gameBoard.getSquareInfo(playButton);
-//    console.log('position inside attemptClaim is ' + position)
     if (position == undefined) {
-//      console.log(_player)
       gameBoard.claimSquare(playButton, _player)
       if (checkGameStatus() === 'draw' || checkGameStatus() === 'win' || checkGameStatus() === 'lose') {
-
+        //nothing
       } else {
         computerTurn();
       }
     } else {
-//      console.log('No can do.')
     }
   }
 
@@ -156,19 +151,17 @@ const gameFlow = (() => {
     for (let i = 1; i <= gameBoard.gameBoardSize(); i++) {
       if (gameBoard.getSquareInfo(i) == undefined) {
         availablePositions.push(i);
-        //console.log(`hi ${i}`);
       }
     }
-//    console.log(availablePositions);
     const computerChoice = parseInt(Math.random() * availablePositions.length);
-//    console.log(`index ${computerChoice} results in availablePositions choice of ${availablePositions[computerChoice]}`);
     if (availablePositions.length > 0) {
       gameBoard.claimSquare(availablePositions[computerChoice], _computer)
     }
   }
 
   const checkGameStatus = () => {
-    return gameBoard.gameStatus(whichIsHuman(), whichIsComputer())
+    //return gameBoard.gameStatus(gameFlow.whichIsHuman(), gameFlow.whichIsComputer())
+    return gameBoard.gameStatus();
   }
 
   const whichIsHuman = () => _player;
