@@ -7,11 +7,10 @@ const gameBoard = (() => {
 
   const claimSquare = (position, whichPlayer) => {
     //_boardArray[position - 1] = Player().getSymbol();
-    console.log(whichPlayer);
-    _boardArray[position - 1] = whichPlayer.getSymbol(whichPlayer);
+    _boardArray[position - 1] = whichPlayer.getPseudo(whichPlayer);
     let button = document.querySelector(`.play-button-${position}`);
 //    console.log(whichPlayer.getPseudo(whichPlayer));
-    button.textContent = whichPlayer.getSymbol(whichPlayer);
+    button.textContent = whichPlayer.getPseudo(whichPlayer);
     gameFlow.checkGameStatus();
   }
 
@@ -30,7 +29,7 @@ const gameBoard = (() => {
     }
   })();
 
-  const gameStatus = () => {
+  const gameStatus = (playerStatus, computerStatus) => {
     if (gameBoardSize() == 9) {
       console.groupCollapsed('Game Status');
       let _playerArray = [];
@@ -38,10 +37,9 @@ const gameBoard = (() => {
       for (let i = 0; i < _boardArray.length; i++) {
         if (_boardArray[i] !== undefined) {
           console.log(i + ' ' + Player(_boardArray[i]).getSymbol());
-          //if (_boardArray[i] === Player().getPseudo('X')) {
-          if (_boardArray[i] === /*Player().getPseudo('X')*/ '') {
-              _playerArray.push(i + 1);
-          } else if (_boardArray[i] === '') {
+          if (_boardArray[i] === playerStatus) {
+            _playerArray.push(i + 1);
+          } else if (_boardArray[i] === computerStatus) {
             _computerArray.push(i + 1);
           }
         } else {
@@ -72,21 +70,10 @@ const Player = (symbol) => {
 
   const chooseSymbol = (choice, symbol) => {
     _symbol = symbol;
-    
-    let buttonForSymbol = document.getElementById(`select-${symbol.toLowerCase()}`);
-    let buttonForOtherSymbol;
-    if (symbol === 'X') {
-      buttonForOtherSymbol = document.getElementById('select-o')
-    } else {
-      buttonForOtherSymbol = document.getElementById('select-x')
-    }
-
     if (choice === true) {
-      buttonForSymbol.classList.add('player-choice');
-      buttonForOtherSymbol.classList.add('computer-choice');
+      document.getElementById(`select-${symbol.toLowerCase()}`).classList.add('player-choice');
     } else {
-      buttonForSymbol.classList.remove('player-choice');
-      buttonForOtherSymbol.classList.remove('computer-choice');
+      document.getElementById(`select-${symbol.toLowerCase()}`).classList.remove('player-choice');
     }
   }
 
@@ -104,23 +91,8 @@ const Player = (symbol) => {
     }
   }
 
-  const getPseudo = (symbol) => {
-    return document.getElementById(`select-${symbol.toString().toLowerCase()}`).textContent;
-  }
-
-/*  const getPseudo = (eitherPlayer) => {
-    console.log(`select-${eitherPlayer.toString().toLowerCase()}`);
-    console.log(document.getElementById(`select-${eitherPlayer.toString().toLowerCase()}`));
-    return document.getElementById(`select-${eitherPlayer.toString().toLowerCase()}`).textContent;
-  }
-*/
-
-  const getPseudoPlayer = () => {
-    return document.getElementsByClassName(`player-choice`)[0].textContent;
-  }
-
-  const getPseudoComputer = () => {
-    return document.getElementsByClassName(`computer-choice`)[0].textContent;
+  const getPseudo = (whichPlayer) => {
+    //return document.getElementById(`select-${symbol.toLowerCase()}`).textContent;
   }
 
 //  const getPseudoO = () => {
@@ -132,10 +104,7 @@ const Player = (symbol) => {
     chooseSymbol,
     setPseudoX,
     setPseudoO,
-    getPseudoPlayer,
-    getPseudoComputer,
-    getPseudo
-    //X,
+    getPseudo//X,
     //getPseudoO
   };
 }
@@ -190,7 +159,7 @@ const gameFlow = (() => {
 
   const checkGameStatus = () => {
     //return gameBoard.gameStatus(gameFlow.whichIsHuman(), gameFlow.whichIsComputer())
-    return gameBoard.gameStatus();
+    return gameBoard.gameStatus(Player().getPseudo('X'), Player().getPseudo('O'));
   }
 
   const whichIsHuman = () => _player;
