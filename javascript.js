@@ -2,16 +2,14 @@
 
 const gameBoard = (() => {
   const gameBoardSize = () => 9;
+  const _gameBoardRoot = ParseInt(Math.sqrt(gameBoardSize)+"");
 
   let _boardArray = new Array(gameBoardSize());
 
   const claimSquare = (position, whichPlayer) => {
-    //_boardArray[position - 1] = Player().getSymbol();
-    console.log(whichPlayer);
-    _boardArray[position - 1] = whichPlayer.getSymbol(whichPlayer);
+    _boardArray[position - 1] = Player().getPseudo(whichPlayer);
     let button = document.querySelector(`.play-button-${position}`);
-//    console.log(whichPlayer.getPseudo(whichPlayer));
-    button.textContent = whichPlayer.getSymbol(whichPlayer);
+    button.textContent = Player().getPseudo(whichPlayer);
     gameFlow.checkGameStatus();
   }
 
@@ -37,9 +35,10 @@ const gameBoard = (() => {
       let _computerArray = [];
       for (let i = 0; i < _boardArray.length; i++) {
         if (_boardArray[i] !== undefined) {
+          console.log(_boardArray[i]);
           console.log(i + ' ' + Player(_boardArray[i]).getSymbol());
           //if (_boardArray[i] === Player().getPseudo('X')) {
-          if (_boardArray[i] === /*Player().getPseudo('X')*/ '') {
+          if (_boardArray[i] === Player().getPseudo('player')) {
               _playerArray.push(i + 1);
           } else if (_boardArray[i] === '') {
             _computerArray.push(i + 1);
@@ -50,15 +49,33 @@ const gameBoard = (() => {
       }
       console.log(_playerArray + _computerArray);
       console.groupEnd('Game Status');
+      checkForWin(_playerArray, Player().getPseudo('player'));
     }
     return '';
+  }
+
+  const checkForWin = (currentArray, playerOrComputer) => {
+    let winFlag = false;
+
+    // FORWARD DIAGONAL CHECK
+    /* Check forward diagonal by checking for a 1, 
+       a number equal to gameboard size, and a 
+       number equal to every gameboard size's root 
+       interval between those endpoints.
+    */
+    if (Array.isArray(currentArray)) {
+      for (let i = 0; i < _gameBoardRoot - 1; i++) {
+        if (currentArray.includes(i * _gameBoardRoot + 1)) {} else {winFlag = false}
+      }
+    } 
   }
 
   return {
     claimSquare,
     getSquareInfo,
     gameStatus,
-    gameBoardSize
+    gameBoardSize,
+    checkForWin,
   };
 })();
 
@@ -105,7 +122,15 @@ const Player = (symbol) => {
   }
 
   const getPseudo = (symbol) => {
-    return document.getElementById(`select-${symbol.toString().toLowerCase()}`).textContent;
+    switch(symbol) {
+      default:
+        return document.getElementById(`select-${symbol.toString().toLowerCase()}`).textContent;
+      case 'player':
+        return document.getElementsByClassName(`player-choice`)[0].textContent
+      case 'computer':
+        return document.getElementsByClassName(`computer-choice`)[0].textContent
+    }
+    
   }
 
 /*  const getPseudo = (eitherPlayer) => {
@@ -141,8 +166,12 @@ const Player = (symbol) => {
 }
 
 const gameFlow = (() => {
-  let _player = Player('X');
-  let _computer = Player('O');
+  let _player = 'X';
+  let _computer = 'O';
+  if (document.getElementById('select-o') === document.getElementsByClassName('player-select')[0]) {
+    _computer = 'X';
+    _player = 'O';
+  }
 
   const changeSymbol = () => {
     //Just shows the form
