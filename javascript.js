@@ -2,7 +2,7 @@
 
 const gameBoard = (() => {
   const gameBoardSize = () => 9;
-  const _gameBoardRoot = ParseInt(Math.sqrt(gameBoardSize)+"");
+  const _gameBoardRoot = Number.parseInt(Math.sqrt(gameBoardSize)+"");
 
   let _boardArray = new Array(gameBoardSize());
 
