@@ -2,7 +2,7 @@
 
 const gameBoard = (() => {
   const gameBoardSize = () => 9;
-  const _gameBoardRoot = Number.parseInt(Math.sqrt(gameBoardSize)+"");
+  const _gameBoardRoot = Math.sqrt(gameBoardSize());
 
   let _boardArray = new Array(gameBoardSize());
 
@@ -55,19 +55,155 @@ const gameBoard = (() => {
   }
 
   const checkForWin = (currentArray, playerOrComputer) => {
-    let winFlag = false;
+    let winType = [];
 
     // FORWARD DIAGONAL CHECK
     /* Check forward diagonal by checking for a 1, 
        a number equal to gameboard size, and a 
-       number equal to every gameboard size's root 
-       interval between those endpoints.
+       number at an interval equal to every 
+       gameboard size's root plus one between 
+       those endpoints.
+       i.e. a 3x3 grid's forward diagonal would be
+       positions 1, 5, 9 while a 4x4 grid's forward
+       diagonal would be positions 1, 6, 11, 16, and
+       a 5x5 grid's forward diagonal win would be at
+       positions 1, 7, 13, 19, 25, and etc.
     */
     if (Array.isArray(currentArray)) {
-      for (let i = 0; i < _gameBoardRoot - 1; i++) {
-        if (currentArray.includes(i * _gameBoardRoot + 1)) {} else {winFlag = false}
+      let winFowardDiagonalFlag = [];
+      console.groupCollapsed('checkForwardDiagonal');
+      console.log('currentArray is ' + currentArray);
+      console.log('_gameBoardRoot is ' + _gameBoardRoot);
+      for (let i = 0; i < _gameBoardRoot; i++) {
+        console.log((1 + i * (_gameBoardRoot + 1)));
+        if (currentArray.includes(1 + i * (_gameBoardRoot + 1))) {
+          console.log('currentArray includes: ' + (1 + i * (_gameBoardRoot + 1)));
+          winFowardDiagonalFlag.push(true);
+        }
       }
-    } 
+      console.log(winFowardDiagonalFlag);
+      if ((winFowardDiagonalFlag.length == _gameBoardRoot) && winFowardDiagonalFlag.every(entry => entry == true)) {
+        ////////////////////////
+        // WIN!
+        ////////////////////////
+        console.log('Win by Forward Diagonal!')
+        winType.push('Forward Diagonal');
+      }
+      console.groupEnd('checkForWin');
+      } else {
+      console.log('currentArray is not an array')
+    }
+
+    // BACKWARDS DIAGONAL CHECK
+    /* Check backward diagonal by checking for a 
+       gameboard size's root, a number equal to 
+       gameboard size minus a number that is one 
+       smaller than its root, and a number equal 
+       to every gameboard size's root interval 
+       (less one) between those endpoints.
+    */
+
+    if (Array.isArray(currentArray)) {
+      let winBackwardDiagonalFlag = [];
+      console.groupCollapsed('checkBackwardDiagonal');
+      console.log('currentArray is ' + currentArray);
+      console.log('_gameBoardRoot is ' + _gameBoardRoot);
+      for (let i = 0; i < _gameBoardRoot; i++) {
+        console.log((_gameBoardRoot + i * (_gameBoardRoot - 1)));
+        if (currentArray.includes(_gameBoardRoot + i * (_gameBoardRoot - 1))) {
+          console.log('currentArray includes: ' + (_gameBoardRoot + i * (_gameBoardRoot - 1)));
+          winBackwardDiagonalFlag.push(true);
+        }
+      }
+      console.log(winBackwardDiagonalFlag);
+      if ((winBackwardDiagonalFlag.length == _gameBoardRoot) && winBackwardDiagonalFlag.every(entry => entry == true)) {
+        ////////////////////////
+        // WIN!
+        ////////////////////////
+        console.log('Win by Backward Diagonal!')
+        winType.push('Backward Diagonal');
+      }
+      console.groupEnd('checkForWin');
+      } else {
+      console.log('currentArray is not an array')
+    }
+  
+    // ROW CHECK
+    /* Check rows by beginning at 1 and 
+       continuing until the game board size's 
+       root or multiple thereof.
+    */
+    if (Array.isArray(currentArray)) {
+      let winRowFlag = [];
+      console.groupCollapsed('checkRow');
+      console.log('currentArray is ' + currentArray);
+      console.log('_gameBoardRoot is ' + _gameBoardRoot);
+      for (let i = 0; i < _gameBoardRoot; i++) {
+        for (let j = i * _gameBoardRoot; j < i * _gameBoardRoot + _gameBoardRoot; j++) {
+          if (currentArray.includes(j + 1)) {
+            console.log('currentArray includes: ' + (j + 1));
+            winRowFlag.push(true);
+          }  
+          console.log(winRowFlag);
+        }
+        if ((winRowFlag.length == _gameBoardRoot) && winRowFlag.every(entry => entry == true)) {
+          ////////////////////////
+          // WIN!
+          ////////////////////////
+          console.log('Win by Row!')
+          winType.push('Row');
+          winType.push(i + 1);
+          winRowFlag = [];
+        } else {
+          winRowFlag = [];
+        }
+      }
+      console.groupEnd('checkForWin');
+      } else {
+      console.log('currentArray is not an array')
+    }
+  
+    // COLUMN CHECK
+    /* Check columns by beginning at 1 and 
+       checking a number of entries equal to the 
+       game board size's root in increments of 
+       said root, then moving to 2 and repeating 
+       the same check until you reach the last 
+       column (which is the game board size's 
+       root).
+    */
+       if (Array.isArray(currentArray)) {
+        let winColumnFlag = [];
+        console.groupCollapsed('checkColumn');
+        console.log('currentArray is ' + currentArray);
+        //console.log('_gameBoardRoot is ' + _gameBoardRoot);
+        for (let i = 0; i < _gameBoardRoot; i++) {
+          //console.log('i is ' + i + '');
+          for (let j = 0; j < _gameBoardRoot; j++) {
+            if (currentArray.includes(i + j * _gameBoardRoot + 1)) {
+              console.log('currentArray includes: ' + (i + j * _gameBoardRoot + 1));
+              winColumnFlag.push(true);
+            }  
+            console.log(winColumnFlag);
+          }
+          if ((winColumnFlag.length == _gameBoardRoot) && winColumnFlag.every(entry => entry == true)) {
+            ////////////////////////
+            // WIN!
+            ////////////////////////
+            console.log('Win by Column!');
+            winType.push('Column');
+            winType.push(i + 1);
+            winColumnFlag = [];
+          } else {
+            winColumnFlag = [];
+          }
+        }
+        console.groupEnd('checkForWin');
+        } else {
+        console.log('currentArray is not an array');
+      }
+    console.log(winType);
+    return winType[0];
   }
 
   return {
