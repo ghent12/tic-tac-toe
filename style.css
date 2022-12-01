@@ -104,19 +104,23 @@ header {
   the JS file based upon the grid size.
 */
 
-.button-holder-1, .button-holder-2, .button-holder-3 {
+.button-holder {
+  width: auto;
+}
+
+.button-top-row {
   margin-bottom: 0.3rem;
 }
 
-.button-holder-1, .button-holder-4, .button-holder-7 {
+.button-left-column {
   margin-right: 0.3rem;
 }
 
-.button-holder-3, .button-holder-6, .button-holder-9 {
+.button-right-column {
   margin-left: 0.3rem;
 }
 
-.button-holder-7, .button-holder-8, .button-holder-9 {
+.button-bottom-row {
   margin-top: 0.3rem;
 }
 

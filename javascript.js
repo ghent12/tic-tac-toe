@@ -21,9 +21,21 @@ const gameBoard = (() => {
           playArea.classList.add('play-area');
     for (let i = 1; i <= _boardArray.length; i++) {
       const boardButtonHolder = playArea.appendChild(document.createElement('div'));
-            boardButtonHolder.classList.add('button-holder-' + i);
-///////// ---- Make this part more dynamic by adding other classes such as 
-///////// 'button-top-row', 'button-inner-row', and 'button-bottom-row'
+            boardButtonHolder.classList.add('button-holder-' + i, 'button-holder');
+      if (i <= _gameBoardRoot) {
+        boardButtonHolder.classList.add('button-top-row')
+      } else if ((i > _gameBoardRoot) && (i <= (_gameBoardRoot * (_gameBoardRoot - 1)))) {
+        boardButtonHolder.classList.add('button-inner-row')
+      } else {
+        boardButtonHolder.classList.add('button-bottom-row')
+      }
+      if ((i % _gameBoardRoot) == 1) {
+        boardButtonHolder.classList.add('button-left-column')
+      } else if ((i % _gameBoardRoot) != 0) {
+        boardButtonHolder.classList.add('button-inner-column')
+      } else {
+        boardButtonHolder.classList.add('button-right-column')
+      }
       const boardButton = boardButtonHolder.appendChild(document.createElement('button'));
             boardButton.classList.add('play-button', 'play-button-' + i);
             boardButton.id = 'play-button-' + i;
