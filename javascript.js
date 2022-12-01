@@ -22,11 +22,29 @@ const gameBoard = (() => {
     for (let i = 1; i <= _boardArray.length; i++) {
       const boardButtonHolder = playArea.appendChild(document.createElement('div'));
             boardButtonHolder.classList.add('button-holder-' + i);
+///////// ---- Make this part more dynamic by adding other classes such as 
+///////// 'button-top-row', 'button-inner-row', and 'button-bottom-row'
       const boardButton = boardButtonHolder.appendChild(document.createElement('button'));
             boardButton.classList.add('play-button', 'play-button-' + i);
             boardButton.id = 'play-button-' + i;
     }
-  })();
+    for (let i = 1; i <= _gameBoardRoot; i++) {
+      const winRow = htmlBody.appendChild(document.createElement('div'));
+            winRow.classList.add('win-row-' + i, 'win-row', 'just-hidden');
+      const winColumn = htmlBody.appendChild(document.createElement('div'));
+            winColumn.classList.add('win-column-' + i, 'win-column', 'just-hidden');
+    }
+    const winForwardDiagonal = htmlBody.appendChild(document.createElement('div'));
+          winForwardDiagonal.classList.add('win-forward-diagonal', 'just-hidden');
+    const winBackwardDiagonal = htmlBody.appendChild(document.createElement('div'));
+          winBackwardDiagonal.classList.add('win-backward-diagonal', 'just-hidden');
+})();
+
+//  const _initializeWinLines = (() => {
+    //win-forward-diagonal
+
+//  })();
+
 
   const gameStatus = () => {
     if (gameBoardSize() == 9) {
@@ -40,7 +58,7 @@ const gameBoard = (() => {
           //if (_boardArray[i] === Player().getPseudo('X')) {
           if (_boardArray[i] === Player().getPseudo('player')) {
               _playerArray.push(i + 1);
-          } else if (_boardArray[i] === '') {
+          } else if (_boardArray[i] === Player().getPseudo('computer')) {
             _computerArray.push(i + 1);
           }
         } else {
@@ -50,6 +68,7 @@ const gameBoard = (() => {
       console.log(_playerArray + _computerArray);
       console.groupEnd('Game Status');
       checkForWin(_playerArray, Player().getPseudo('player'));
+      checkForWin(_computerArray, Player().getPseudo('computer'));
     }
     return '';
   }
@@ -89,9 +108,9 @@ const gameBoard = (() => {
         console.log('Win by Forward Diagonal!')
         winType.push('Forward Diagonal');
       }
-      console.groupEnd('checkForWin');
+      console.groupEnd('checkForwardDiagonal');
       } else {
-      console.log('currentArray is not an array')
+      console.log('currentArray is not an array');
     }
 
     // BACKWARDS DIAGONAL CHECK
@@ -120,12 +139,12 @@ const gameBoard = (() => {
         ////////////////////////
         // WIN!
         ////////////////////////
-        console.log('Win by Backward Diagonal!')
+        console.log('Win by Backward Diagonal!');
         winType.push('Backward Diagonal');
       }
-      console.groupEnd('checkForWin');
+      console.groupEnd('checkBackwardDiagonal');
       } else {
-      console.log('currentArray is not an array')
+      console.log('currentArray is not an array');
     }
   
     // ROW CHECK
@@ -158,7 +177,7 @@ const gameBoard = (() => {
           winRowFlag = [];
         }
       }
-      console.groupEnd('checkForWin');
+      console.groupEnd('checkRow');
       } else {
       console.log('currentArray is not an array')
     }
@@ -198,11 +217,11 @@ const gameBoard = (() => {
             winColumnFlag = [];
           }
         }
-        console.groupEnd('checkForWin');
+        console.groupEnd('checkColumn');
         } else {
         console.log('currentArray is not an array');
       }
-    console.log(winType);
+    console.log(playerOrComputer + ': ' + winType);
     return winType[0];
   }
 
