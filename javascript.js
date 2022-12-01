@@ -1,7 +1,8 @@
 // Made by Patrick Davey, 2022
 
 const gameBoard = (() => {
-  const gameBoardSize = () => 9;
+  //let gameBoardSize = () => 9;
+  let gameBoardSize = () => parseInt(document.getElementById('game-size').value)
   const _gameBoardRoot = Math.sqrt(gameBoardSize());
 
   let _boardArray = new Array(gameBoardSize());
@@ -15,7 +16,17 @@ const gameBoard = (() => {
 
   const getSquareInfo = (position) => _boardArray[position - 1];
 
-  const _createBoard = (() => {
+  const gameReset = () => {
+    _boardArray = new Array(gameBoardSize());
+    const boardButtons = Array.prototype.slice.call(document.querySelectorAll('.play-button'));
+    console.log(boardButtons);
+    for (let i = 0; i < boardButtons.length; i++) {
+      let button = boardButtons[i];
+      button.textContent = "";
+    }
+  }
+
+  const _createBoard = ((playSize) => {
     const htmlBody = document.getElementById('body')
     const playArea = htmlBody.appendChild(document.createElement('main'));
           playArea.classList.add('play-area');
@@ -52,6 +63,12 @@ const gameBoard = (() => {
           winBackwardDiagonal.classList.add('win-backward-diagonal', 'just-hidden');
 })();
 
+  const newBoard = (newSize) => {
+    console.log(newSize);
+    //First must reset and clear the board.
+    
+    //Then must create the new board.
+  }
 //  const _initializeWinLines = (() => {
     //win-forward-diagonal
 
@@ -79,7 +96,9 @@ const gameBoard = (() => {
       }
       console.log(_playerArray + _computerArray);
       console.groupEnd('Game Status');
-      checkForWin(_playerArray, Player().getPseudo('player'));
+      if (checkForWin(_playerArray, Player().getPseudo('player')) != undefined) {
+        setTimeout(gameReset, 2000)
+      };
       checkForWin(_computerArray, Player().getPseudo('computer'));
     }
     return '';
@@ -243,6 +262,8 @@ const gameBoard = (() => {
     gameStatus,
     gameBoardSize,
     checkForWin,
+    gameReset,
+    newBoard
   };
 })();
 
@@ -464,6 +485,13 @@ const displayController = (() => {
       let button = boardButtons[i];
       button.addEventListener('click', gameFlow.attemptClaim.bind(button, i + 1))
     }
+    const resetButton = document.getElementById('reset-button');
+          resetButton.addEventListener('click', gameBoard.gameReset.bind(resetButton))
+  })();
+
+  const _initializeSelectChangeEvents = (() => {
+    const boardSize = document.getElementById('game-size');
+          boardSize.addEventListener('change', (event) => {gameBoard.newBoard(event.target.value)})   
   })();
 
   return {

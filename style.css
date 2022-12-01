@@ -14,7 +14,7 @@ body {
 
 header {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr;
   grid-template-rows: 1fr 2fr;
   gap: 1rem 3rem;
   justify-items: center;
@@ -27,10 +27,25 @@ header {
   border-radius: 0.7rem;
 }
 
-.change-symbols {
+.select {
+  display: grid;
+  gap: 0;
+  justify-items: center;
+  align-items: center;
+}
+
+.change-symbols, .reset-button {
   padding: 0.2rem;
   border-radius: 1rem;
   border: 0.1rem solid #338;
+  height: 2.5rem;
+  align-self: center;
+}
+
+.reset-button {
+  border-color: #833;
+  color: #400;
+  background-color: #eaa;
 }
 
 #change-symbols-form-area {

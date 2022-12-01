@@ -10,15 +10,29 @@
   </head>
     <body id="body">
       <header id="header" class="header top hero">
-        <select name="difficulty" id="difficulty" class="difficulty">
-          <option value="baby" class="difficulty">Baby</option>
-          <option value="kid" class="difficulty">Kid</option>
-          <option value="overconfident" class="difficulty">Overconfident</option>
-          <option value="insurmountable" class="difficulty">Insurmountable</option>
-        </select>
-        <button class="change-symbols" id="change-symbols">Change Symbols</button>
+        <div class="select">
+          <span>Opponent:</span>
+          <select name="difficulty" id="difficulty" class="difficulty">
+            <option value="toddler" class="difficulty">Advanced Toddler</option>
+            <option value="kid" class="difficulty" selected>Cocky Kid</option>
+            <option value="teen" class="difficulty">Overconfident Teen</option>
+            <option value="adult" class="difficulty">Insurmountable Adult</option>
+          </select>
+        </div>
+        <div class="select">
+          <span>Game Size:</span>
+          <select name="game-size" id="game-size" class="game-size">
+            <option value="4" class="game-size">4</option>
+            <option value="9" class="game-size" selected>9</option>
+            <option value="16" class="game-size">16</option>
+            <option value="25" class="game-size">25</option>
+            <option value="36" class="game-size">36</option>
+          </select>
+        </div>
+        <button class="reset-button" id="reset-button">Reset</button>
         <button class="player-select" id="select-x">X</button>
         <button class="player-select" id="select-o">O</button>
+        <button class="change-symbols" id="change-symbols">Change Symbols</button>
       </header>
       <h1 id="hello-world">Hello World!</h1>
     </body>
