@@ -1,9 +1,8 @@
 // Made by Patrick Davey, 2022
 
 const gameBoard = (() => {
-  //let gameBoardSize = () => 9;
   let gameBoardSize = () => parseInt(document.getElementById('game-size').value)
-  const _gameBoardRoot = Math.sqrt(gameBoardSize());
+  const _gameBoardRoot = () => Math.sqrt(gameBoardSize());
 
   let _boardArray = new Array(gameBoardSize());
 
@@ -18,6 +17,12 @@ const gameBoard = (() => {
 
   const gameReset = () => {
     _boardArray = new Array(gameBoardSize());
+    const drawOverlay = document.querySelectorAll('.draw-overlay');
+          drawOverlay.forEach(elem => elem.remove());
+    const background = document.getElementsByTagName("*");    
+    for (const elem of background) {
+      elem.classList.remove('blur-me');
+    }
     const boardButtons = Array.prototype.slice.call(document.querySelectorAll('.play-button'));
     console.log(boardButtons);
     for (let i = 0; i < boardButtons.length; i++) {
@@ -26,23 +31,25 @@ const gameBoard = (() => {
     }
   }
 
-  const _createBoard = ((playSize) => {
+  const _createBoard = () => {
+    gameReset();
+    let gridTemplateColumnString = ''
     const htmlBody = document.getElementById('body')
     const playArea = htmlBody.appendChild(document.createElement('main'));
           playArea.classList.add('play-area');
     for (let i = 1; i <= _boardArray.length; i++) {
       const boardButtonHolder = playArea.appendChild(document.createElement('div'));
             boardButtonHolder.classList.add('button-holder-' + i, 'button-holder');
-      if (i <= _gameBoardRoot) {
+      if (i <= _gameBoardRoot()) {
         boardButtonHolder.classList.add('button-top-row')
-      } else if ((i > _gameBoardRoot) && (i <= (_gameBoardRoot * (_gameBoardRoot - 1)))) {
+      } else if ((i > _gameBoardRoot()) && (i <= (_gameBoardRoot() * (_gameBoardRoot() - 1)))) {
         boardButtonHolder.classList.add('button-inner-row')
       } else {
         boardButtonHolder.classList.add('button-bottom-row')
       }
-      if ((i % _gameBoardRoot) == 1) {
+      if ((i % _gameBoardRoot()) == 1) {
         boardButtonHolder.classList.add('button-left-column')
-      } else if ((i % _gameBoardRoot) != 0) {
+      } else if ((i % _gameBoardRoot()) != 0) {
         boardButtonHolder.classList.add('button-inner-column')
       } else {
         boardButtonHolder.classList.add('button-right-column')
@@ -51,56 +58,87 @@ const gameBoard = (() => {
             boardButton.classList.add('play-button', 'play-button-' + i);
             boardButton.id = 'play-button-' + i;
     }
-    for (let i = 1; i <= _gameBoardRoot; i++) {
-      const winRow = htmlBody.appendChild(document.createElement('div'));
+
+    const winnersOverlay = document.getElementsByClassName('winners-overlay')[0];
+    const winnersRowLines = winnersOverlay.appendChild(document.createElement('div'));
+          winnersRowLines.classList.add('winners-row-lines');
+    const winnersColumnLines = winnersOverlay.appendChild(document.createElement('div'));
+          winnersColumnLines.classList.add('winners-column-lines');
+    for (let i = 1; i <= _gameBoardRoot(); i++) {
+      let remValue = ((30 / _gameBoardRoot()) / 2) + ((i - 1) * (30 / _gameBoardRoot()))
+      const winRow = winnersRowLines.appendChild(document.createElement('div'));
             winRow.classList.add('win-row-' + i, 'win-row', 'just-hidden');
-      const winColumn = htmlBody.appendChild(document.createElement('div'));
+            winRow.style.cssText += `top: ${remValue}rem`;
+      const winColumn = winnersColumnLines.appendChild(document.createElement('div'));
             winColumn.classList.add('win-column-' + i, 'win-column', 'just-hidden');
+            winColumn.style.cssText += `left: ${remValue}rem`;
+      gridTemplateColumnString += '1fr ';
     }
-    const winForwardDiagonal = htmlBody.appendChild(document.createElement('div'));
+    const winForwardDiagonal = winnersOverlay.appendChild(document.createElement('div'));
           winForwardDiagonal.classList.add('win-forward-diagonal', 'just-hidden');
-    const winBackwardDiagonal = htmlBody.appendChild(document.createElement('div'));
+    const winBackwardDiagonal = winnersOverlay.appendChild(document.createElement('div'));
           winBackwardDiagonal.classList.add('win-backward-diagonal', 'just-hidden');
-})();
+    playArea.style['grid-template-columns'] = gridTemplateColumnString;
+    gameFlow.initializeButtonClicks();
+  };
 
   const newBoard = (newSize) => {
     console.log(newSize);
-    //First must reset and clear the board.
-    
-    //Then must create the new board.
+    //First, must reset and clear the board.
+    const playButtons0 = document.querySelectorAll('.play-button')
+          playButtons0.forEach((btn) => {console.log('hey'); btn.remove()});
+    const buttonHolders0 = document.querySelectorAll('.button-holder')
+    console.log(buttonHolders0)
+          buttonHolders0.forEach((holder) => {holder.remove()});
+    console.log(buttonHolders0)
+    const playArea0 = document.querySelectorAll('.play-area')
+          playArea0.forEach((area) => {area.remove()});
+    const winBackwardDiagonal0 = document.querySelectorAll('.win-backward-diagonal')
+          winBackwardDiagonal0.forEach((line) => {line.remove()});
+    const winForwardDiagonal0 = document.querySelectorAll('.win-forward-diagonal')
+          winForwardDiagonal0.forEach((line) => {line.remove()});
+    const winColumns0 = document.querySelectorAll('.win-column')
+          winColumns0.forEach((line) => {line.remove(); console.log('hi')});
+    const winRows0 = document.querySelectorAll('.win-row')
+          winRows0.forEach((line) => {line.remove()});
+    const winnersColumnLines0 = document.querySelectorAll('.winners-column-lines')
+          winnersColumnLines0.forEach((area) => {area.remove()});
+    const winnersRowLines0 = document.querySelectorAll('.winners-row-lines')
+          winnersRowLines0.forEach((area) => {area.remove()});
+
+    //Then create the new board.
+    _createBoard()
   }
-//  const _initializeWinLines = (() => {
-    //win-forward-diagonal
-
-//  })();
-
 
   const gameStatus = () => {
-    if (gameBoardSize() == 9) {
-      console.groupCollapsed('Game Status');
-      let _playerArray = [];
-      let _computerArray = [];
-      for (let i = 0; i < _boardArray.length; i++) {
-        if (_boardArray[i] !== undefined) {
-          console.log(_boardArray[i]);
-          console.log(i + ' ' + Player(_boardArray[i]).getSymbol());
-          //if (_boardArray[i] === Player().getPseudo('X')) {
-          if (_boardArray[i] === Player().getPseudo('player')) {
-              _playerArray.push(i + 1);
-          } else if (_boardArray[i] === Player().getPseudo('computer')) {
-            _computerArray.push(i + 1);
-          }
-        } else {
-
+    console.groupCollapsed('Game Status');
+    let _playerArray = [];
+    let _computerArray = [];
+    for (let i = 0; i < _boardArray.length; i++) {
+      if (_boardArray[i] !== undefined) {
+        console.log(_boardArray[i]);
+        console.log(i + ' ' + Player(_boardArray[i]).getSymbol());
+        if (_boardArray[i] === Player().getPseudo('player')) {
+            _playerArray.push(i + 1);
+        } else if (_boardArray[i] === Player().getPseudo('computer')) {
+          _computerArray.push(i + 1);
         }
       }
-      console.log(_playerArray + _computerArray);
-      console.groupEnd('Game Status');
-      if (checkForWin(_playerArray, Player().getPseudo('player')) != undefined) {
-        setTimeout(gameReset, 2000)
-      };
-      checkForWin(_computerArray, Player().getPseudo('computer'));
     }
+    console.log(_playerArray + _computerArray);
+    console.groupEnd('Game Status');
+    if (checkForWin(_playerArray, Player().getPseudo('player')) != undefined) {
+      setTimeout(gameReset, 2000);
+    } else if (checkForWin(_computerArray, Player().getPseudo('computer')) != undefined) {
+      setTimeout(gameReset, 2000);
+    } else if (_playerArray.length + _computerArray.length == gameBoardSize()) {
+      displayDraw();
+      setTimeout(() => {
+        document.querySelectorAll('.draw-overlay')[0].classList.remove('blur-me')
+      }, 100)
+      setTimeout(gameReset, 3500);
+    }
+
     return '';
   }
 
@@ -123,16 +161,16 @@ const gameBoard = (() => {
       let winFowardDiagonalFlag = [];
       console.groupCollapsed('checkForwardDiagonal');
       console.log('currentArray is ' + currentArray);
-      console.log('_gameBoardRoot is ' + _gameBoardRoot);
-      for (let i = 0; i < _gameBoardRoot; i++) {
-        console.log((1 + i * (_gameBoardRoot + 1)));
-        if (currentArray.includes(1 + i * (_gameBoardRoot + 1))) {
-          console.log('currentArray includes: ' + (1 + i * (_gameBoardRoot + 1)));
+      console.log('_gameBoardRoot is ' + _gameBoardRoot());
+      for (let i = 0; i < _gameBoardRoot(); i++) {
+        console.log((1 + i * (_gameBoardRoot() + 1)));
+        if (currentArray.includes(1 + i * (_gameBoardRoot() + 1))) {
+          console.log('currentArray includes: ' + (1 + i * (_gameBoardRoot() + 1)));
           winFowardDiagonalFlag.push(true);
         }
       }
       console.log(winFowardDiagonalFlag);
-      if ((winFowardDiagonalFlag.length == _gameBoardRoot) && winFowardDiagonalFlag.every(entry => entry == true)) {
+      if ((winFowardDiagonalFlag.length == _gameBoardRoot()) && winFowardDiagonalFlag.every(entry => entry == true)) {
         ////////////////////////
         // WIN!
         ////////////////////////
@@ -157,16 +195,16 @@ const gameBoard = (() => {
       let winBackwardDiagonalFlag = [];
       console.groupCollapsed('checkBackwardDiagonal');
       console.log('currentArray is ' + currentArray);
-      console.log('_gameBoardRoot is ' + _gameBoardRoot);
-      for (let i = 0; i < _gameBoardRoot; i++) {
-        console.log((_gameBoardRoot + i * (_gameBoardRoot - 1)));
-        if (currentArray.includes(_gameBoardRoot + i * (_gameBoardRoot - 1))) {
-          console.log('currentArray includes: ' + (_gameBoardRoot + i * (_gameBoardRoot - 1)));
+      console.log('_gameBoardRoot is ' + _gameBoardRoot());
+      for (let i = 0; i < _gameBoardRoot(); i++) {
+        console.log((_gameBoardRoot() + i * (_gameBoardRoot() - 1)));
+        if (currentArray.includes(_gameBoardRoot() + i * (_gameBoardRoot() - 1))) {
+          console.log('currentArray includes: ' + (_gameBoardRoot() + i * (_gameBoardRoot() - 1)));
           winBackwardDiagonalFlag.push(true);
         }
       }
       console.log(winBackwardDiagonalFlag);
-      if ((winBackwardDiagonalFlag.length == _gameBoardRoot) && winBackwardDiagonalFlag.every(entry => entry == true)) {
+      if ((winBackwardDiagonalFlag.length == _gameBoardRoot()) && winBackwardDiagonalFlag.every(entry => entry == true)) {
         ////////////////////////
         // WIN!
         ////////////////////////
@@ -187,16 +225,16 @@ const gameBoard = (() => {
       let winRowFlag = [];
       console.groupCollapsed('checkRow');
       console.log('currentArray is ' + currentArray);
-      console.log('_gameBoardRoot is ' + _gameBoardRoot);
-      for (let i = 0; i < _gameBoardRoot; i++) {
-        for (let j = i * _gameBoardRoot; j < i * _gameBoardRoot + _gameBoardRoot; j++) {
+      console.log('_gameBoardRoot is ' + _gameBoardRoot());
+      for (let i = 0; i < _gameBoardRoot(); i++) {
+        for (let j = i * _gameBoardRoot(); j < i * _gameBoardRoot() + _gameBoardRoot(); j++) {
           if (currentArray.includes(j + 1)) {
             console.log('currentArray includes: ' + (j + 1));
             winRowFlag.push(true);
           }  
           console.log(winRowFlag);
         }
-        if ((winRowFlag.length == _gameBoardRoot) && winRowFlag.every(entry => entry == true)) {
+        if ((winRowFlag.length == _gameBoardRoot()) && winRowFlag.every(entry => entry == true)) {
           ////////////////////////
           // WIN!
           ////////////////////////
@@ -227,16 +265,16 @@ const gameBoard = (() => {
         console.groupCollapsed('checkColumn');
         console.log('currentArray is ' + currentArray);
         //console.log('_gameBoardRoot is ' + _gameBoardRoot);
-        for (let i = 0; i < _gameBoardRoot; i++) {
+        for (let i = 0; i < _gameBoardRoot(); i++) {
           //console.log('i is ' + i + '');
-          for (let j = 0; j < _gameBoardRoot; j++) {
-            if (currentArray.includes(i + j * _gameBoardRoot + 1)) {
-              console.log('currentArray includes: ' + (i + j * _gameBoardRoot + 1));
+          for (let j = 0; j < _gameBoardRoot(); j++) {
+            if (currentArray.includes(i + j * _gameBoardRoot() + 1)) {
+              console.log('currentArray includes: ' + (i + j * _gameBoardRoot() + 1));
               winColumnFlag.push(true);
             }  
             console.log(winColumnFlag);
           }
-          if ((winColumnFlag.length == _gameBoardRoot) && winColumnFlag.every(entry => entry == true)) {
+          if ((winColumnFlag.length == _gameBoardRoot()) && winColumnFlag.every(entry => entry == true)) {
             ////////////////////////
             // WIN!
             ////////////////////////
@@ -253,7 +291,32 @@ const gameBoard = (() => {
         console.log('currentArray is not an array');
       }
     console.log(playerOrComputer + ': ' + winType);
+    if (winType.length >= 2) {
+      return winType;
+    }
     return winType[0];
+  }
+
+  const blurEverything = () => {
+    const background = document.getElementsByTagName("*");
+    for (const elem of background) {
+      if (elem.classList.contains('draw-overlay')) {
+
+      } else {
+        elem.classList.add('blur-me');
+      }
+    }
+  }
+
+  const displayDraw = () => {
+    blurEverything();
+    const body = document.getElementById('body');
+    const existsOrNot = document.querySelectorAll('.draw-overlay');
+    if (existsOrNot.length > 0) {
+      return '';
+    }
+    console.log('DRAW!!!!');
+//    drawOverlay.classList.remove('blur-me');
   }
 
   return {
@@ -367,6 +430,7 @@ const gameFlow = (() => {
     changeForm.classList.remove('hide-form');
     document.getElementsByName('x-symbol-field')[0].value = document.getElementById('select-x').textContent;
     document.getElementsByName('o-symbol-field')[0].value = document.getElementById('select-o').textContent;
+    gameBoard.gameReset();
   }
 
   const changeSymbolSubmit = () => {
@@ -386,7 +450,7 @@ const gameFlow = (() => {
       if (checkGameStatus() === 'draw' || checkGameStatus() === 'win' || checkGameStatus() === 'lose') {
         //nothing
       } else {
-        computerTurn();
+        setTimeout(computerTurn, 750);
       }
     } else {
     }
@@ -424,6 +488,15 @@ const gameFlow = (() => {
     Player().chooseSymbol(true, 'O');
   }
 
+  const initializeButtonClicks = () => {
+    const boardButtons = Array.prototype.slice.call(document.querySelectorAll('.play-button'));
+    console.log(boardButtons);
+    for (let i = 0; i < boardButtons.length; i++) {
+      let button = boardButtons[i];
+      button.addEventListener('click', gameFlow.attemptClaim.bind(button, i + 1))
+    }
+  }
+
   return {
     attemptClaim,
     computerTurn,
@@ -433,7 +506,8 @@ const gameFlow = (() => {
     chooseX,
     chooseO,
     changeSymbol,
-    changeSymbolSubmit
+    changeSymbolSubmit,
+    initializeButtonClicks
   }
 })();
 
@@ -478,13 +552,7 @@ const displayController = (() => {
     }
   })();
 
-  const _initializeButtonClicks = (() => {
-    const boardButtons = Array.prototype.slice.call(document.querySelectorAll('.play-button'));
-    console.log(boardButtons);
-    for (let i = 0; i < boardButtons.length; i++) {
-      let button = boardButtons[i];
-      button.addEventListener('click', gameFlow.attemptClaim.bind(button, i + 1))
-    }
+  const _initializeResetButtonClick = (() => {
     const resetButton = document.getElementById('reset-button');
           resetButton.addEventListener('click', gameBoard.gameReset.bind(resetButton))
   })();
@@ -494,8 +562,11 @@ const displayController = (() => {
           boardSize.addEventListener('change', (event) => {gameBoard.newBoard(event.target.value)})   
   })();
 
-  return {
+  const _firstBoard = (() => {
+    gameBoard.newBoard()
+  })();
 
+  return {
   };
 })();
 

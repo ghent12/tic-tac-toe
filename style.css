@@ -23,8 +23,20 @@ header {
   width: 30rem;
 }
 
+option {
+  text-align: center;
+}
+
 #difficulty {
   border-radius: 0.7rem;
+}
+
+.just-hidden {
+  visibility: hidden;
+}
+
+.blur-me {
+  filter: blur(3px);
 }
 
 .select {
@@ -106,37 +118,40 @@ header {
   height: 30rem;
   width: 30rem;
   display: grid;
-/*  grid-template-columns: repeat(auto-fill, 5rem);*/
-  grid-template-columns: 1fr 1fr 1fr; /* Will need to change this to be more dynamic */
+  grid-template-columns: 1fr 1fr 1fr;
   background-color: #002;
   box-shadow: 00px 00px 1rem #124;
+  z-index: 1;
 }
-
-/*
-  Need to make this section dynamic using different 
-  class names like '.button-top-row', '.button-inner-row',
-  '.button-bottom-row' and etc., assinging them within 
-  the JS file based upon the grid size.
-*/
 
 .button-holder {
   width: auto;
 }
 
 .button-top-row {
-  margin-bottom: 0.3rem;
+  margin-bottom: 0.18rem;
 }
 
-.button-left-column {
-  margin-right: 0.3rem;
-}
-
-.button-right-column {
-  margin-left: 0.3rem;
+.button-inner-row {
+  margin-bottom: 0.18rem;
+  margin-top: 0.18rem;
 }
 
 .button-bottom-row {
-  margin-top: 0.3rem;
+  margin-top: 0.18rem;
+}
+
+.button-left-column {
+  margin-right: 0.18rem;
+}
+
+.button-inner-column {
+  margin-left: 0.18rem;
+  margin-right: 0.18rem;
+}
+
+.button-right-column {
+  margin-left: 0.18rem;
 }
 
 .play-button {
@@ -144,45 +159,90 @@ header {
   width: 100%;
 }
 
+.draw-overlay {
+  z-index: 9999;
+  width: 100vw;
+  height: 100vh;
+  display: grid;
+  align-items: center;
+  text-align: center;
+  background: #555555aa;
+  position: absolute;
+  color: #fff;
+  font-size: 5rem;
+  font-weight: 800;
+}
+
+.winners-overlay {
+  z-index: 2;
+  visibility: hidden;
+  width: 30rem;
+  border: 1px solid red;
+  height: 30rem;
+  position: absolute;
+  top: 10.5rem;
+}
+
+.winners-row-lines {
+  display: grid;
+  visibility: inherit;
+}
+
+.winners-column-lines {
+  display: grid;
+  visibility: inherit;
+}
+
 .win-forward-diagonal, .win-backward-diagonal {
-  border:1px solid gray;
-  width:28px;
-  height:28px;
-  position:relative;
+  border: 0px solid gray;
+  width: 28rem;
+  height: 28rem;
+  position: relative;
+  top: 0.8rem;
+  left: 0.9rem;
+  visibility: inherit;
 }
 
 .win-forward-diagonal:after{
-  content:"";
-  position:absolute;
-  border-top:1px solid red;
-  width:40px;
+  content: "";
+  position: absolute;
+  border-top: 0.3rem solid red;
+  width: 40rem;
   transform: rotate(45deg);
   transform-origin: 0% 0%;
 }
 
 .win-backward-diagonal:after{
-  content:"";
-  position:absolute;
-  border-bottom:1px solid red;
-  width:40px;
+  content: "";
+  position: absolute;
+  border-bottom: 0.3rem solid red;
+  width: 40rem;
+  left: -0.1rem;
+  margin: 0.2rem;
   transform: rotate(-45deg);
   transform-origin: left;
 }
 
 .win-row {
-  border-bottom: 1px solid red;
-  width: 25rem;
+  border-bottom: 0.3rem solid red;
+  width: 28rem;
   height: 1px;
+  position: absolute;
+  left: 1rem;
+  visibility: inherit;
 }
 
 .win-column {
-  border-left: 1px solid blue;
+  border-left: 0.3rem solid red;
   width: 1px;
-  height: 25rem;
+  height: 28rem;
+  position: absolute;
+  top: 1rem;
+  visibility: inherit;
 }
 
-.just-hidden {
-  visibility: visible;
+
+
+.unblur-me {
+  filter: blur(-3px);
 }
-
-
