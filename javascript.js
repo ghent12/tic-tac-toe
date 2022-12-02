@@ -128,15 +128,18 @@ const gameBoard = (() => {
     console.log(_playerArray + _computerArray);
     console.groupEnd('Game Status');
     if (checkForWin(_playerArray, Player().getPseudo('player')) != undefined) {
-      setTimeout(gameReset, 2000);
+      //setTimeout(gameReset, 2000);
     } else if (checkForWin(_computerArray, Player().getPseudo('computer')) != undefined) {
-      setTimeout(gameReset, 2000);
+      //setTimeout(gameReset, 2000);
     } else if (_playerArray.length + _computerArray.length == gameBoardSize()) {
       displayDraw();
       setTimeout(() => {
-        document.querySelectorAll('.draw-overlay')[0].classList.remove('blur-me')
+        let drawOverlay = document.querySelectorAll('.draw-overlay')[0]
+        if (drawOverlay != undefined) {
+          drawOverlay.classList.remove('blur-me')
+        }
       }, 100)
-      setTimeout(gameReset, 3500);
+      //setTimeout(gameReset, 3500);
     }
 
     return '';
@@ -300,7 +303,9 @@ const gameBoard = (() => {
   const blurEverything = () => {
     const background = document.getElementsByTagName("*");
     for (const elem of background) {
-      if (elem.classList.contains('draw-overlay')) {
+      if (elem.classList.contains('draw-overlay') || 
+          elem.classList.contains('body') ||
+          elem.classList.contains('html')) {
 
       } else {
         elem.classList.add('blur-me');
@@ -315,8 +320,14 @@ const gameBoard = (() => {
     if (existsOrNot.length > 0) {
       return '';
     }
+    const drawOverlay = body.appendChild(document.createElement('div'));
+          drawOverlay.classList.add('draw-overlay');
+    const drawOverlayText = drawOverlay.appendChild(document.createElement('p'));
+          drawOverlayText.classList.add('draw-overlay');
+          drawOverlayText.textContent = "Draw! Try again...";
     console.log('DRAW!!!!');
-//    drawOverlay.classList.remove('blur-me');
+    
+    drawOverlay.addEventListener('click', gameBoard.gameReset.bind(drawOverlay))
   }
 
   return {
@@ -334,10 +345,6 @@ const Player = (symbol) => {
   let _symbol = symbol;
   const getSymbol = () => _symbol;
   
-  //const getSymbol = () => {document.getElementById(`select-${_symbol.toLowerCase()}`).textContent}
-
-  //const getSymbol = (symbol) => getPseudo(symbol);
-
   const chooseSymbol = (choice, symbol) => {
     _symbol = symbol;
     

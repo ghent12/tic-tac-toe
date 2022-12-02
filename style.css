@@ -36,7 +36,7 @@ option {
 }
 
 .blur-me {
-  filter: blur(3px);
+  filter: blur(1px);
 }
 
 .select {
