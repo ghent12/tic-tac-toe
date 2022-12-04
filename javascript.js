@@ -70,6 +70,7 @@ const gameBoard = (() => {
     }
 
     const winnersOverlay = document.getElementsByClassName('winners-overlay')[0];
+          winnersOverlay.addEventListener('click', gameBoard.gameReset.bind(winnersOverlay))
     const winnersRowLines = winnersOverlay.appendChild(document.createElement('div'));
           winnersRowLines.classList.add('winners-row-lines');
     const winnersColumnLines = winnersOverlay.appendChild(document.createElement('div'));
@@ -81,7 +82,7 @@ const gameBoard = (() => {
             winRow.style.cssText += `top: ${remValue - 0.08 * (_gameBoardRoot() - i)}rem`;
       const winColumn = winnersColumnLines.appendChild(document.createElement('div'));
             winColumn.classList.add('win-column-' + i, 'win-column', 'just-hidden');
-            winColumn.style.cssText += `left: ${remValue + 0.03 * i}rem`;
+            winColumn.style.cssText += `left: ${remValue - 0.25 + 0.05 * i}rem`;
       gridTemplateColumnString += '1fr ';
     }
     const winForwardDiagonal = winnersOverlay.appendChild(document.createElement('div'));
@@ -141,7 +142,7 @@ const gameBoard = (() => {
       displayWin(checkForWin(_playerArray, Player().getPseudo('player')));
       //setTimeout(gameReset, 2000);
     } else if (checkForWin(_computerArray, Player().getPseudo('computer')) != undefined) {
-      displayLose(checkForWin(_computerArray, Player().getPseudo('computer')));
+      displayWin(checkForWin(_computerArray, Player().getPseudo('computer')));
       //setTimeout(gameReset, 2000);
     } else if (_playerArray.length + _computerArray.length == gameBoardSize()) {
       displayDraw();
@@ -294,6 +295,7 @@ const gameBoard = (() => {
       }
     console.log(playerOrComputer + ': ' + winType);
     if (winType.length >= 1) {
+      winType.push(playerOrComputer)
       return winType;
     }
   }
@@ -328,16 +330,23 @@ const gameBoard = (() => {
   const displayWin = (typeOfWin) => {
     blurEverything();
     console.log(typeOfWin);
+    let winOrLose = '';
     const root = document.querySelector(':root');
-          root.style.setProperty("--pseudo-win-color", 'green');
+    if (Player().getPseudo('player') == typeOfWin[typeOfWin.length - 1]) {
+      winOrLose += 'win'
+      root.style.setProperty("--pseudo-win-color", 'green');
+    } else {
+      winOrLose += 'lose'
+      root.style.setProperty("--pseudo-win-color", "red");
+    }
     const winMessage = document.getElementsByClassName('victory-message')[0];
           winMessage.style.visibility = 'visible';
     const backwardDiagonal = document.getElementsByClassName('win-backward-diagonal')[0]
     const forwardDiagonal = document.getElementsByClassName('win-forward-diagonal')[0]
 
-    if (typeOfWin.length == 1) {
-      winMessage.textContent = `You Win! (${typeOfWin[0]})`  ;
-      console.log('You Win! (' + typeOfWin[0] + ')');
+    if (typeOfWin.length == 2) {
+      winMessage.textContent = `You ${winOrLose}! (${typeOfWin[0]})`  ;
+      console.log(`You ${winOrLose}! (${typeOfWin[0]})`);
       if (typeOfWin[0] == 'Backward Diagonal') {
         backwardDiagonal.style.visibility = 'visible';
       }
@@ -345,9 +354,9 @@ const gameBoard = (() => {
         forwardDiagonal.style.visibility = 'visible';
       }
     } else {
-      let victoryString = 'You Win! (';
-      for (let i = 0; i < typeOfWin.length - 1; i++) {
-        if ((i == typeOfWin.length) && typeOfWin.length > 3) {
+      let victoryString = `You ${winOrLose}! (`;
+      for (let i = 0; i < typeOfWin.length - 2; i++) {
+        if ((i == typeOfWin.length - 1) && typeOfWin.length > 4) {
           victoryString += " and"
         }
         // Won't quite achieve desired goal for getting both diagonal wins
@@ -357,7 +366,7 @@ const gameBoard = (() => {
           console.log(`win-${typeOfWin[i].toLowerCase()}-${typeOfWin[i + 1]}`)
           const winLine = document.getElementsByClassName(`win-${typeOfWin[i].toLowerCase()}-${typeOfWin[i + 1]}`)[0];
                 winLine.style.visibility = 'visible';
-          if (i != typeOfWin.length - 2) {
+          if (i < typeOfWin.length - 3) {
             victoryString += ", "
           }
         } else if ((typeOfWin[i] == "Backward Diagonal") || (typeOfWin[i] == "Forward Diagonal")) {
@@ -368,7 +377,7 @@ const gameBoard = (() => {
           if (typeOfWin[i] == 'Forward Diagonal') {
             forwardDiagonal.style.visibility = 'visible';
           }
-          if (i != typeOfWin.length - 2) {
+          if (i < typeOfWin.length - 3) {
             victoryString += ", "
           }
         }
