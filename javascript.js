@@ -22,13 +22,23 @@ const gameBoard = (() => {
     const background = document.getElementsByTagName("*");    
     for (const elem of background) {
       elem.classList.remove('blur-me');
+      if (elem.classList.contains('play-area')) {
+        elem.style.backgroundColor = "#002"
+      }
     }
     const boardButtons = Array.prototype.slice.call(document.querySelectorAll('.play-button'));
     console.log(boardButtons);
     for (let i = 0; i < boardButtons.length; i++) {
       let button = boardButtons[i];
-      button.textContent = "";
+      button.textContent = '';
     }
+    const winOverlay = document.getElementsByClassName('winners-overlay')[0];
+    const children = winOverlay.getElementsByTagName("*")
+    for (const child of children) {
+      child.style.visibility = "hidden";
+    }
+    const winMessage = document.getElementsByClassName('victory-message')[0];
+          winMessage.textContent = ""
   }
 
   const _createBoard = () => {
@@ -128,17 +138,13 @@ const gameBoard = (() => {
     console.log(_playerArray + _computerArray);
     console.groupEnd('Game Status');
     if (checkForWin(_playerArray, Player().getPseudo('player')) != undefined) {
+      displayWin(checkForWin(_playerArray, Player().getPseudo('player')));
       //setTimeout(gameReset, 2000);
     } else if (checkForWin(_computerArray, Player().getPseudo('computer')) != undefined) {
+      displayLose(checkForWin(_computerArray, Player().getPseudo('computer')));
       //setTimeout(gameReset, 2000);
     } else if (_playerArray.length + _computerArray.length == gameBoardSize()) {
       displayDraw();
-      setTimeout(() => {
-        let drawOverlay = document.querySelectorAll('.draw-overlay')[0]
-        if (drawOverlay != undefined) {
-          drawOverlay.classList.remove('blur-me')
-        }
-      }, 100)
       //setTimeout(gameReset, 3500);
     }
 
@@ -158,8 +164,7 @@ const gameBoard = (() => {
        positions 1, 5, 9 while a 4x4 grid's forward
        diagonal would be positions 1, 6, 11, 16, and
        a 5x5 grid's forward diagonal win would be at
-       positions 1, 7, 13, 19, 25, and etc.
-    */
+       positions 1, 7, 13, 19, 25, and etc. */
     if (Array.isArray(currentArray)) {
       let winFowardDiagonalFlag = [];
       console.groupCollapsed('checkForwardDiagonal');
@@ -191,9 +196,7 @@ const gameBoard = (() => {
        gameboard size minus a number that is one 
        smaller than its root, and a number equal 
        to every gameboard size's root interval 
-       (less one) between those endpoints.
-    */
-
+       (less one) between those endpoints. */
     if (Array.isArray(currentArray)) {
       let winBackwardDiagonalFlag = [];
       console.groupCollapsed('checkBackwardDiagonal');
@@ -222,8 +225,7 @@ const gameBoard = (() => {
     // ROW CHECK
     /* Check rows by beginning at 1 and 
        continuing until the game board size's 
-       root or multiple thereof.
-    */
+       root or multiple thereof. */
     if (Array.isArray(currentArray)) {
       let winRowFlag = [];
       console.groupCollapsed('checkRow');
@@ -261,15 +263,12 @@ const gameBoard = (() => {
        said root, then moving to 2 and repeating 
        the same check until you reach the last 
        column (which is the game board size's 
-       root).
-    */
+       root). */
        if (Array.isArray(currentArray)) {
         let winColumnFlag = [];
         console.groupCollapsed('checkColumn');
         console.log('currentArray is ' + currentArray);
-        //console.log('_gameBoardRoot is ' + _gameBoardRoot);
         for (let i = 0; i < _gameBoardRoot(); i++) {
-          //console.log('i is ' + i + '');
           for (let j = 0; j < _gameBoardRoot(); j++) {
             if (currentArray.includes(i + j * _gameBoardRoot() + 1)) {
               console.log('currentArray includes: ' + (i + j * _gameBoardRoot() + 1));
@@ -294,10 +293,9 @@ const gameBoard = (() => {
         console.log('currentArray is not an array');
       }
     console.log(playerOrComputer + ': ' + winType);
-    if (winType.length >= 2) {
+    if (winType.length >= 1) {
       return winType;
     }
-    return winType[0];
   }
 
   const blurEverything = () => {
@@ -305,12 +303,48 @@ const gameBoard = (() => {
     for (const elem of background) {
       if (elem.classList.contains('draw-overlay') || 
           elem.classList.contains('body') ||
-          elem.classList.contains('html')) {
-
+          elem.classList.contains('html') ||
+          elem.classList.contains('winners-overlay') ||
+          elem.classList.contains('winners-row-lines') ||
+          elem.classList.contains('winners-column-lines') ||
+          elem.classList.contains('win-row') ||
+          elem.classList.contains('win-column') ||
+          elem.classList.contains('win-forward-diagonal') ||
+          elem.classList.contains('win-backward-diagonal') ||
+          elem.classList.contains('victory-message') ||
+          elem.classList.contains('header') ||
+          elem.classList.contains('reset-button')) {
+        // Do nothing.
+      } else if (elem.classList.contains('play-area')) {
+        elem.style.backgroundColor = "#556"
+        elem.classList.add('blur-me');
       } else {
         elem.classList.add('blur-me');
       }
     }
+
+  }
+
+  const displayWin = (typeOfWin) => {
+    blurEverything();
+    console.log(typeOfWin);
+    if (typeOfWin.length == 1) {
+      const winMessage = document.getElementsByClassName('victory-message')[0];
+            winMessage.style.visibility = 'visible';
+            winMessage.textContent = `You Win! (${typeOfWin[0]})`  ;
+      console.log('You Win! (' + typeOfWin[0] + ')');
+      if (typeOfWin[0] == 'Backward Diagonal') {
+        const backwardDiagonal = document.getElementsByClassName('win-backward-diagonal')[0]
+              backwardDiagonal.style.visibility = 'visible';
+        const root = document.querySelector(':root');
+              root.style.setProperty("--pseudo-win-color", 'green');
+      }
+    }
+  }
+
+  const displayLose = (typeOfWin) => {
+    blurEverything();
+
   }
 
   const displayDraw = () => {
@@ -327,7 +361,7 @@ const gameBoard = (() => {
           drawOverlayText.textContent = "Draw! Try again...";
     console.log('DRAW!!!!');
     
-    drawOverlay.addEventListener('click', gameBoard.gameReset.bind(drawOverlay))
+    drawOverlay.addEventListener('click', gameBoard.gameReset.bind(drawOverlay));
   }
 
   return {
@@ -430,6 +464,12 @@ const gameFlow = (() => {
     _computer = 'X';
     _player = 'O';
   }
+
+  //-----------------------------------
+  //  Must add a turn regulator. Clicking will only claim a square
+  //  when it is the player's turn. Unable to claim when it is the
+  //  computer's turn or when the victory/loss/draw message is on 
+  //  the screen until reset.
 
   const changeSymbol = () => {
     //Just shows the form

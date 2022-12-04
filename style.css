@@ -1,3 +1,7 @@
+:root {
+  --pseudo-win-color: red;
+}
+
 * {
   padding: 0;
   margin: 0;
@@ -31,10 +35,6 @@ option {
   border-radius: 0.7rem;
 }
 
-.just-hidden {
-  visibility: hidden;
-}
-
 .blur-me {
   filter: blur(1px);
 }
@@ -65,12 +65,14 @@ option {
   padding: 1rem;
   z-index: 99;
   position: fixed;
-  top: 45%;
+/*  top: 45%;
   left: 50%;
+  transform: translate(-50%, -50%);*/
+  align-self: center;
+  justify-self: center;
   border-radius: 3rem;
   border: 0.3rem solid #005;
   background-color: #26b;
-  transform: translate(-50%, -50%);
 }
 
 #change-symbols-form {
@@ -177,10 +179,21 @@ option {
   z-index: 2;
   visibility: hidden;
   width: 30rem;
-  border: 1px solid red;
+  border: 0px solid red;
   height: 30rem;
   position: absolute;
   top: 10.5rem;
+  text-align: center;
+  align-items: center;
+}
+
+.victory-message {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100%;
+  transform: translate(-50%, -50%);
+  z-index: 3;
 }
 
 .winners-row-lines {
@@ -206,7 +219,7 @@ option {
 .win-forward-diagonal:after{
   content: "";
   position: absolute;
-  border-top: 0.3rem solid red;
+  border-top: 0.3rem solid var(--pseudo-win-color);
   width: 40rem;
   transform: rotate(45deg);
   transform-origin: 0% 0%;
@@ -215,7 +228,7 @@ option {
 .win-backward-diagonal:after{
   content: "";
   position: absolute;
-  border-bottom: 0.3rem solid red;
+  border-bottom: 0.3rem solid var(--pseudo-win-color); 
   width: 40rem;
   left: -0.1rem;
   margin: 0.2rem;
@@ -224,7 +237,7 @@ option {
 }
 
 .win-row {
-  border-bottom: 0.3rem solid red;
+  border-bottom: 0.3rem solid var(--pseudo-win-color);
   width: 28rem;
   height: 1px;
   position: absolute;
@@ -233,7 +246,7 @@ option {
 }
 
 .win-column {
-  border-left: 0.3rem solid red;
+  border-left: 0.3rem solid var(--pseudo-win-color);
   width: 1px;
   height: 28rem;
   position: absolute;
@@ -241,8 +254,6 @@ option {
   visibility: inherit;
 }
 
-
-
-.unblur-me {
-  filter: blur(-3px);
+.just-hidden {
+  visibility: hidden;
 }
