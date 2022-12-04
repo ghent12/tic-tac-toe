@@ -210,10 +210,19 @@ option {
   border: 0px solid gray;
   width: 28rem;
   height: 28rem;
-  position: relative;
   top: 0.8rem;
   left: 0.9rem;
   visibility: inherit;
+}
+
+.win-forward-diagonal {
+  position: absolute;
+  left: -43%;
+}
+
+.win-backward-diagonal {
+  position: absolute;
+  top: 96%;
 }
 
 .win-forward-diagonal:after{

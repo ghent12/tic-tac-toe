@@ -78,10 +78,10 @@ const gameBoard = (() => {
       let remValue = ((30 / _gameBoardRoot()) / 2) + ((i - 1) * (30 / _gameBoardRoot()))
       const winRow = winnersRowLines.appendChild(document.createElement('div'));
             winRow.classList.add('win-row-' + i, 'win-row', 'just-hidden');
-            winRow.style.cssText += `top: ${remValue}rem`;
+            winRow.style.cssText += `top: ${remValue - 0.08 * (_gameBoardRoot() - i)}rem`;
       const winColumn = winnersColumnLines.appendChild(document.createElement('div'));
             winColumn.classList.add('win-column-' + i, 'win-column', 'just-hidden');
-            winColumn.style.cssText += `left: ${remValue}rem`;
+            winColumn.style.cssText += `left: ${remValue + 0.03 * i}rem`;
       gridTemplateColumnString += '1fr ';
     }
     const winForwardDiagonal = winnersOverlay.appendChild(document.createElement('div'));
@@ -328,18 +328,56 @@ const gameBoard = (() => {
   const displayWin = (typeOfWin) => {
     blurEverything();
     console.log(typeOfWin);
+    const root = document.querySelector(':root');
+          root.style.setProperty("--pseudo-win-color", 'green');
+    const winMessage = document.getElementsByClassName('victory-message')[0];
+          winMessage.style.visibility = 'visible';
+    const backwardDiagonal = document.getElementsByClassName('win-backward-diagonal')[0]
+    const forwardDiagonal = document.getElementsByClassName('win-forward-diagonal')[0]
+
     if (typeOfWin.length == 1) {
-      const winMessage = document.getElementsByClassName('victory-message')[0];
-            winMessage.style.visibility = 'visible';
-            winMessage.textContent = `You Win! (${typeOfWin[0]})`  ;
+      winMessage.textContent = `You Win! (${typeOfWin[0]})`  ;
       console.log('You Win! (' + typeOfWin[0] + ')');
       if (typeOfWin[0] == 'Backward Diagonal') {
-        const backwardDiagonal = document.getElementsByClassName('win-backward-diagonal')[0]
-              backwardDiagonal.style.visibility = 'visible';
-        const root = document.querySelector(':root');
-              root.style.setProperty("--pseudo-win-color", 'green');
+        backwardDiagonal.style.visibility = 'visible';
       }
+      if (typeOfWin[0] == 'Forward Diagonal') {
+        forwardDiagonal.style.visibility = 'visible';
+      }
+    } else {
+      let victoryString = 'You Win! (';
+      for (let i = 0; i < typeOfWin.length - 1; i++) {
+        if ((i == typeOfWin.length) && typeOfWin.length > 3) {
+          victoryString += " and"
+        }
+        // Won't quite achieve desired goal for getting both diagonal wins
+        if ((typeOfWin[i] == 'Row') || (typeOfWin[i] == 'Column')) {
+          console.log(parseInt(typeOfWin[i]))
+          victoryString += typeOfWin[i] + ' ' + typeOfWin[i + 1];
+          console.log(`win-${typeOfWin[i].toLowerCase()}-${typeOfWin[i + 1]}`)
+          const winLine = document.getElementsByClassName(`win-${typeOfWin[i].toLowerCase()}-${typeOfWin[i + 1]}`)[0];
+                winLine.style.visibility = 'visible';
+          if (i != typeOfWin.length - 2) {
+            victoryString += ", "
+          }
+        } else if ((typeOfWin[i] == "Backward Diagonal") || (typeOfWin[i] == "Forward Diagonal")) {
+          victoryString += typeOfWin[i];
+          if (typeOfWin[i] == 'Backward Diagonal') {
+            backwardDiagonal.style.visibility = 'visible';
+          }
+          if (typeOfWin[i] == 'Forward Diagonal') {
+            forwardDiagonal.style.visibility = 'visible';
+          }
+          if (i != typeOfWin.length - 2) {
+            victoryString += ", "
+          }
+        }
+      }
+      victoryString += ")";
+
+      winMessage.textContent = victoryString;
     }
+
   }
 
   const displayLose = (typeOfWin) => {
