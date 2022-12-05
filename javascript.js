@@ -6,11 +6,38 @@ const gameBoard = (() => {
 
   let _boardArray = new Array(gameBoardSize());
 
+  let _turnControl = [''];
+
+
+  const turnCheck = () => {
+    return _turnControl[0];
+  }
+
+  const computerTurnLock = (key) => {
+    if (key == 'lock') {
+      _turnControl[0] = 'computer';
+    } else {
+      _turnControl[0] = '';
+    }
+    
+  }
+
+  const winLoseOrDrawTurnLock = () => {
+    _turnControl[0] = 'overlay';
+  }
+
   const claimSquare = (position, whichPlayer) => {
-    _boardArray[position - 1] = Player().getPseudo(whichPlayer);
-    let button = document.querySelector(`.play-button-${position}`);
-    button.textContent = Player().getPseudo(whichPlayer);
-    gameFlow.checkGameStatus();
+    if ((_turnControl[0] == 'computer') && (Player().getPseudo(whichPlayer) == (Player().getPseudo('computer')))) {
+      _boardArray[position - 1] = Player().getPseudo(whichPlayer);
+      let button = document.querySelector(`.play-button-${position}`);
+      button.textContent = Player().getPseudo(whichPlayer);
+      gameFlow.checkGameStatus();
+    } else if (_turnControl == '' && (Player().getPseudo(whichPlayer) == (Player().getPseudo('player')))) {
+      _boardArray[position - 1] = Player().getPseudo(whichPlayer);
+      let button = document.querySelector(`.play-button-${position}`);
+      button.textContent = Player().getPseudo(whichPlayer);
+      gameFlow.checkGameStatus();
+    }
   }
 
   const getSquareInfo = (position) => _boardArray[position - 1];
@@ -39,6 +66,7 @@ const gameBoard = (() => {
     }
     const winMessage = document.getElementsByClassName('victory-message')[0];
           winMessage.textContent = ""
+    _turnControl[0] = "";
   }
 
   const _createBoard = () => {
@@ -140,12 +168,15 @@ const gameBoard = (() => {
     console.groupEnd('Game Status');
     if (checkForWin(_playerArray, Player().getPseudo('player')) != undefined) {
       displayWin(checkForWin(_playerArray, Player().getPseudo('player')));
+      return 'win'
       //setTimeout(gameReset, 2000);
     } else if (checkForWin(_computerArray, Player().getPseudo('computer')) != undefined) {
       displayWin(checkForWin(_computerArray, Player().getPseudo('computer')));
+      return 'lose'
       //setTimeout(gameReset, 2000);
     } else if (_playerArray.length + _computerArray.length == gameBoardSize()) {
       displayDraw();
+      return 'draw';
       //setTimeout(gameReset, 3500);
     }
 
@@ -318,7 +349,7 @@ const gameBoard = (() => {
           elem.classList.contains('reset-button')) {
         // Do nothing.
       } else if (elem.classList.contains('play-area')) {
-        elem.style.backgroundColor = "#556"
+        elem.style.backgroundColor = "#778"
         elem.classList.add('blur-me');
       } else {
         elem.classList.add('blur-me');
@@ -328,10 +359,13 @@ const gameBoard = (() => {
   }
 
   const displayWin = (typeOfWin) => {
+    /* This will blur the background and then display the correct win message
+       and the correct win line(s) in the correct color. */
     blurEverything();
     console.log(typeOfWin);
     let winOrLose = '';
     const root = document.querySelector(':root');
+
     if (Player().getPseudo('player') == typeOfWin[typeOfWin.length - 1]) {
       winOrLose += 'win'
       root.style.setProperty("--pseudo-win-color", 'green');
@@ -356,8 +390,8 @@ const gameBoard = (() => {
     } else {
       let victoryString = `You ${winOrLose}! (`;
       for (let i = 0; i < typeOfWin.length - 2; i++) {
-        if ((i == typeOfWin.length - 1) && typeOfWin.length > 4) {
-          victoryString += " and"
+        if ((i == typeOfWin.length - 3) && typeOfWin.length > 4) {
+          victoryString += " and "
         }
         // Won't quite achieve desired goal for getting both diagonal wins
         if ((typeOfWin[i] == 'Row') || (typeOfWin[i] == 'Column')) {
@@ -389,11 +423,6 @@ const gameBoard = (() => {
 
   }
 
-  const displayLose = (typeOfWin) => {
-    blurEverything();
-
-  }
-
   const displayDraw = () => {
     blurEverything();
     const body = document.getElementById('body');
@@ -418,7 +447,9 @@ const gameBoard = (() => {
     gameBoardSize,
     checkForWin,
     gameReset,
-    newBoard
+    newBoard,
+    turnCheck,
+    computerTurnLock
   };
 })();
 
@@ -538,6 +569,10 @@ const gameFlow = (() => {
     Player().setPseudoO();
   }
   const attemptClaim = (playButton) => {
+    // vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+    // Triggers exactly on button click of any of the play fields.
+    // Need to check if it is the player's turn, then claim the square and trigger
+    // the computer's turn.
     const position = gameBoard.getSquareInfo(playButton);
     if (position == undefined) {
       gameBoard.claimSquare(playButton, _player)
@@ -551,6 +586,10 @@ const gameFlow = (() => {
   }
 
   const computerTurn = () => {
+    //////////////////////////////////////////////////
+    ////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////
+    gameBoard.computerTurnLock('lock');
     let availablePositions = [];
     for (let i = 1; i <= gameBoard.gameBoardSize(); i++) {
       if (gameBoard.getSquareInfo(i) == undefined) {
@@ -560,11 +599,11 @@ const gameFlow = (() => {
     const computerChoice = parseInt(Math.random() * availablePositions.length);
     if (availablePositions.length > 0) {
       gameBoard.claimSquare(availablePositions[computerChoice], _computer)
+      gameBoard.computerTurnLock('unlock');
     }
   }
 
   const checkGameStatus = () => {
-    //return gameBoard.gameStatus(gameFlow.whichIsHuman(), gameFlow.whichIsComputer())
     return gameBoard.gameStatus();
   }
 
